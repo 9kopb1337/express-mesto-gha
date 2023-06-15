@@ -5,7 +5,7 @@ const {
   SERVER_ERROR,
 } = require("../errors/error");
 
-module.exports.getCards = (req, res) => {
+const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch((err) => {
@@ -15,7 +15,7 @@ module.exports.getCards = (req, res) => {
     });
 };
 
-module.exports.postCard = (req, res) => {
+const postCard = (req, res) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
@@ -35,7 +35,7 @@ module.exports.postCard = (req, res) => {
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+const deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndDelete(cardId)
@@ -57,46 +57,60 @@ module.exports.deleteCard = (req, res) => {
     });
 };
 
-module.exports.likeCard = (req, res) => {
+const likeCard = (req, res) => {
   const { _id } = req.user;
   const { cardId } = req.params;
 
-  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id}}, { new: true }).then(card => {
-    if(!card) {
-      res.status(ERROR_NOT_FOUND).send({
-        message: `Карточка не найдена.`,
-      });
-      return;
-    }
-    res.send(card);
-  }).catch(err => {
-    if(!Card[cardId]) {
-      res.status(ERROR_BAD_REQUEST).send({ message: `Переданы некорректные данные карточки.` });
-      return;
-    } else {
-      res.status(SERVER_ERROR).send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
-    }
-  });
+  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
+    .then((card) => {
+      if (!card) {
+        res.status(ERROR_NOT_FOUND).send({
+          message: `Карточка не найдена.`,
+        });
+        return;
+      }
+      res.send(card);
+    })
+    .catch((err) => {
+      if (!Card[cardId]) {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: `Переданы некорректные данные карточки.` });
+        return;
+      } else {
+        res
+          .status(SERVER_ERROR)
+          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+      }
+    });
 };
 
-module.exports.deleteLike = (req, res) => {
+const deleteLike = (req, res) => {
   const { _id } = req.user;
   const { cardId } = req.params;
 
-  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id}}, { new: true }).then(card => {
-    if(!card) {
-      res.status(ERROR_NOT_FOUND).send({
-        message: `Карточка не найдена.`,
-      });
-      return;
-    }
-    res.send(card);
-  }).catch(err => {
-    if(!Card[cardId]) {
-      res.status(ERROR_BAD_REQUEST).send({ message: `Переданы некорректные данные карточки.` });
-      return;
-    } else {
-      res.status(SERVER_ERROR).send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
-    }
-  });
+  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
+    .then((card) => {
+      if (!card) {
+        res.status(ERROR_NOT_FOUND).send({
+          message: `Карточка не найдена.`,
+        });
+        return;
+      }
+      res.send(card);
+    })
+    .catch((err) => {
+      if (!Card[cardId]) {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: `Переданы некорректные данные карточки.` });
+        return;
+      } else {
+        res
+          .status(SERVER_ERROR)
+          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+      }
+    });
 };
+
+module.exports = { getCards, postCard, deleteCard, likeCard, deleteLike };

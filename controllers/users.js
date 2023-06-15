@@ -5,11 +5,13 @@ const {
   SERVER_ERROR,
 } = require("../errors/error");
 
-module.exports.createUser = (req, res) => {
+const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send(user))
+    .then((user) => {
+      res.send(user);
+    })
     .catch((err) => {
       if (!name || !avatar) {
         res.status(ERROR_BAD_REQUEST).send({
@@ -23,7 +25,7 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-module.exports.getUsers = (req, res) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => {
@@ -33,7 +35,7 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.updateUserInfo = (req, res) => {
+const updateUserInfo = (req, res) => {
   const { _id } = req.user;
   const { name, about } = req.body;
 
@@ -49,7 +51,7 @@ module.exports.updateUserInfo = (req, res) => {
       return;
     } else if (!name || !about) {
       res.status(ERROR_BAD_REQUEST).send({
-        message: `Переданы некорректные данные при создании пользователя.`,
+        message: `Переданы некорректные данные при изменении пользователя.`,
       });
     } else {
       res
@@ -59,7 +61,7 @@ module.exports.updateUserInfo = (req, res) => {
   });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res) => {
   const { _id } = req.user;
   const { avatar } = req.body;
 
@@ -75,7 +77,7 @@ module.exports.updateUserAvatar = (req, res) => {
       return;
     } else if (!avatar) {
       res.status(ERROR_BAD_REQUEST).send({
-        message: `Переданы некорректные данные при создании пользователя.`,
+        message: `Переданы некорректные данные при изменении пользователя.`,
       });
     } else {
       res
@@ -85,7 +87,7 @@ module.exports.updateUserAvatar = (req, res) => {
   });
 };
 
-module.exports.getUserId = (req, res) => {
+const getUserId = (req, res) => {
   const { userId } = req.params;
 
   User.findById(userId)
@@ -104,4 +106,12 @@ module.exports.getUserId = (req, res) => {
           .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
       }
     });
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  updateUserInfo,
+  updateUserAvatar,
+  getUserId,
 };
