@@ -1,0 +1,28 @@
+{
+  "name": "express-mesto-gha",
+  "version": "1.0.0",
+  "description": "sprint 13 mesto ",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "lint": "npx eslint .",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/9kopb1337/express-mesto-gha.git"
+  },
+  "author": "yakor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/9kopb1337/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/9kopb1337/express-mesto-gha#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
