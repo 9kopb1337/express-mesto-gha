@@ -7,11 +7,15 @@ const {
 
 const getCards = (req, res) => {
   Card.find({})
+    .populate("owner")
     .then((cards) => res.send(cards))
     .catch((err) => {
       res
         .status(SERVER_ERROR)
-        .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+        .send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
     });
 };
 
@@ -22,15 +26,13 @@ const postCard = (req, res) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (!name || !link) {
-        res.status(ERROR_BAD_REQUEST).send({
-          message: `Переданы некорректные данные при создании карточки.`,
-        });
-        return;
-      } else {
+      if (!Card) {
         res
           .status(SERVER_ERROR)
-          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
@@ -41,18 +43,16 @@ const deleteCard = (req, res) => {
   Card.findByIdAndDelete(cardId)
     .then((card) => {
       if (!card) {
-        res.status(ERROR_NOT_FOUND).send({
-          message: `Карточка не найдена.`,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карточка не найдена." });
         return;
       }
-      res.send({ message: `Карточка удалена.` });
+      res.send({ message: "Карточка удалена." });
     })
-    .catch((err) => {
+    .catch(() => {
       if (!Card[cardId]) {
         res
           .status(ERROR_BAD_REQUEST)
-          .send({ message: `Переданы некорректные данные карточки.` });
+          .send({ message: "Переданы некорректные данные карточки." });
       }
     });
 };
@@ -64,9 +64,7 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(ERROR_NOT_FOUND).send({
-          message: `Карточка не найдена.`,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карточка не найдена." });
         return;
       }
       res.send(card);
@@ -75,12 +73,15 @@ const likeCard = (req, res) => {
       if (!Card[cardId]) {
         res
           .status(ERROR_BAD_REQUEST)
-          .send({ message: `Переданы некорректные данные карточки.` });
+          .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
@@ -92,9 +93,7 @@ const deleteLike = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
     .then((card) => {
       if (!card) {
-        res.status(ERROR_NOT_FOUND).send({
-          message: `Карточка не найдена.`,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карточка не найдена." });
         return;
       }
       res.send(card);
@@ -103,12 +102,15 @@ const deleteLike = (req, res) => {
       if (!Card[cardId]) {
         res
           .status(ERROR_BAD_REQUEST)
-          .send({ message: `Переданы некорректные данные карточки.` });
+          .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };

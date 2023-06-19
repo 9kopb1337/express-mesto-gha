@@ -13,14 +13,18 @@ const createUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (!name || !avatar) {
+      if (err.name === "ValidationError") {
         res.status(ERROR_BAD_REQUEST).send({
-          message: `Переданы некорректные данные при создании пользователя.`,
+          message: "Переданы некорректные данные при создании пользователя.",
         });
+        return;
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
@@ -31,7 +35,10 @@ const getUsers = (req, res) => {
     .catch((err) => {
       return res
         .status(SERVER_ERROR)
-        .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+        .send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
     });
 };
 
@@ -43,48 +50,46 @@ const updateUserInfo = (req, res) => {
     _id,
     { name, about },
     { new: true, runValidators: true }
-  ).then((user) => {
-    if (!User[_id]) {
-      res.status(ERROR_NOT_FOUND).send({
-        message: `Переданы некорректные данные пользователя.`,
-      });
-      return;
-    } else if (!name || !about) {
-      res.status(ERROR_BAD_REQUEST).send({
-        message: `Переданы некорректные данные при изменении пользователя.`,
-      });
-    } else {
-      res
-        .status(SERVER_ERROR)
-        .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
-    }
-  });
+  )
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные пользователя." });
+        return;
+      } else {
+        res
+          .status(SERVER_ERROR)
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
+      }
+    });
 };
 
 const updateUserAvatar = (req, res) => {
   const { _id } = req.user;
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(
-    _id,
-    { avatar },
-    { new: true, runValidators: true }
-  ).then((user) => {
-    if (!User[_id]) {
-      res.status(ERROR_NOT_FOUND).send({
-        message: `Переданы некорректные данные пользователя.`,
-      });
-      return;
-    } else if (!avatar) {
-      res.status(ERROR_BAD_REQUEST).send({
-        message: `Переданы некорректные данные при изменении пользователя.`,
-      });
-    } else {
-      res
-        .status(SERVER_ERROR)
-        .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
-    }
-  });
+  User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные пользователя." });
+        return;
+      } else {
+        res
+          .status(SERVER_ERROR)
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
+      }
+    });
 };
 
 const getUserId = (req, res) => {
@@ -95,15 +100,18 @@ const getUserId = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      if (!User[userId]) {
-        res.status(ERROR_NOT_FOUND).send({
-          message: `Переданы некорректные данные пользователя.`,
+      if (err.name === "CastError") {
+        res.status(ERROR_BAD_REQUEST).send({
+          message: "Переданы некорректные данные пользователя.",
         });
         return;
       } else {
         res
           .status(SERVER_ERROR)
-          .send({ message: `Сервер столкнулся с неожиданной ошибкой.` });
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
