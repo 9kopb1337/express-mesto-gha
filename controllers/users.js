@@ -105,6 +105,9 @@ const getUserId = (req, res) => {
           message: "Переданы некорректные данные пользователя.",
         });
         return;
+      } else if (err.message === "NotFound") {
+        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не был найден!' });
+        return;
       } else {
         res
           .status(SERVER_ERROR)
