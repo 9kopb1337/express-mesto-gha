@@ -19,12 +19,10 @@ const createUser = (req, res) => {
         });
         return;
       } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+        res.status(SERVER_ERROR).send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
       }
     });
 };
@@ -33,12 +31,10 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => {
-      return res
-        .status(SERVER_ERROR)
-        .send({
-          message: "Сервер столкнулся с неожиданной ошибкой.",
-          err: err.message,
-        });
+      return res.status(SERVER_ERROR).send({
+        message: "Сервер столкнулся с неожиданной ошибкой.",
+        err: err.message,
+      });
     });
 };
 
@@ -59,12 +55,10 @@ const updateUserInfo = (req, res) => {
           .send({ message: "Переданы некорректные данные пользователя." });
         return;
       } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+        res.status(SERVER_ERROR).send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
       }
     });
 };
@@ -82,12 +76,10 @@ const updateUserAvatar = (req, res) => {
           .send({ message: "Переданы некорректные данные пользователя." });
         return;
       } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+        res.status(SERVER_ERROR).send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
       }
     });
 };
@@ -96,6 +88,7 @@ const getUserId = (req, res) => {
   const { userId } = req.params;
 
   User.findById(userId)
+    .orFail(() => new Error("Not Found"))
     .then((user) => {
       res.send(user);
     })
@@ -106,15 +99,15 @@ const getUserId = (req, res) => {
         });
         return;
       } else if (err.message === "Not Found") {
-        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь не был найден!' });
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: "Пользователь не был найден!" });
         return;
       } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+        res.status(SERVER_ERROR).send({
+          message: "Сервер столкнулся с неожиданной ошибкой.",
+          err: err.message,
+        });
       }
     });
 };
