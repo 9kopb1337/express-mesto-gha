@@ -47,6 +47,7 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
@@ -71,6 +72,7 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
@@ -95,6 +97,7 @@ const deleteLike = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
