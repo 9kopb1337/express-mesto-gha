@@ -27,7 +27,6 @@ const postCard = (req, res) => {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
-        return;
       } else {
         res.status(SERVER_ERROR).send({
           message: "Сервер столкнулся с неожиданной ошибкой.",
@@ -46,12 +45,10 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
-        return;
       } else {
         res
           .status(SERVER_ERROR)
@@ -73,12 +70,10 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
-        return;
       } else {
         res
           .status(SERVER_ERROR)
@@ -100,12 +95,10 @@ const deleteLike = (req, res) => {
     .catch((err) => {
       if (err.name === "Not Found") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
-        return;
       } else {
         res
           .status(SERVER_ERROR)
