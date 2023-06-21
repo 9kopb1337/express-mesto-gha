@@ -53,10 +53,7 @@ const deleteCard = (req, res) => {
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({
-          message: "Сервер столкнулся с неожиданной ошибкой.",
-          err: err.message,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
       }
     });
 };
@@ -78,10 +75,7 @@ const likeCard = (req, res) => {
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({
-          message: "Сервер столкнулся с неожиданной ошибкой.",
-          err: err.message,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
       }
     });
 };
@@ -103,10 +97,7 @@ const deleteLike = (req, res) => {
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({
-          message: "Сервер столкнулся с неожиданной ошибкой.",
-          err: err.message,
-        });
+        res.status(ERROR_NOT_FOUND).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
       }
     });
 };
