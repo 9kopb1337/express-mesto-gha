@@ -45,14 +45,20 @@ const deleteCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!", err: err.message });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
+        res
+          .status(SERVER_ERROR)
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
@@ -66,14 +72,20 @@ const likeCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!", err: err.message });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
+        res
+          .status(SERVER_ERROR)
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
@@ -87,14 +99,20 @@ const deleteLike = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!", err: err.message });
+        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
+        return;
       } else if (err.name === "CastError") {
         res
           .status(ERROR_BAD_REQUEST)
           .send({ message: "Переданы некорректные данные карточки." });
         return;
       } else {
-        res.status(SERVER_ERROR).send({ message: "Сервер столкнулся с неожиданной ошибкой.", err: err.message });
+        res
+          .status(SERVER_ERROR)
+          .send({
+            message: "Сервер столкнулся с неожиданной ошибкой.",
+            err: err.message,
+          });
       }
     });
 };
