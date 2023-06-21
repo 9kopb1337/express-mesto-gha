@@ -40,7 +40,7 @@ const deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndDelete(cardId)
-    .orFail(new Error('Not Found'))
+    .orFail(() => Error('Not Found'))
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
@@ -65,7 +65,7 @@ const likeCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .orFail(new Error('Not Found'))
+    .orFail(() => Error('Not Found'))
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
@@ -90,7 +90,7 @@ const deleteLike = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .orFail(new Error('Not Found'))
+    .orFail(() => Error('Not Found'))
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "Not Found") {
