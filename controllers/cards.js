@@ -7,7 +7,6 @@ const {
 
 const getCards = (req, res) => {
   Card.find({})
-    .populate("owner")
     .then((cards) => res.send(cards))
     .catch((err) => {
       res.status(SERVER_ERROR).send({
