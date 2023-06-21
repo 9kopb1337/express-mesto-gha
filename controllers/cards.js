@@ -40,10 +40,10 @@ const deleteCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndDelete(cardId)
-    .orFail(() => Error('Not Found'))
+    .orFail(new Error('DocumentNotFoundError'))
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === "Not Found") {
+      if (err.message === "DocumentNotFoundError") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
       } else if (err.name === "CastError") {
         res
@@ -65,10 +65,10 @@ const likeCard = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .orFail(() => Error('Not Found'))
+    .orFail(new Error('DocumentNotFoundError'))
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === "Not Found") {
+      if (err.message === "DocumentNotFoundError") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
       } else if (err.name === "CastError") {
         res
@@ -90,10 +90,10 @@ const deleteLike = (req, res) => {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .orFail(() => Error('Not Found'))
+    .orFail(new Error('DocumentNotFoundError'))
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === "Not Found") {
+      if (err.message === "DocumentNotFoundError") {
         res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
       } else if (err.name === "CastError") {
         res
