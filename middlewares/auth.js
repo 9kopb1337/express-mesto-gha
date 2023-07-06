@@ -3,13 +3,14 @@ const ErrorUnauthorized = require("../errors/errorUnauthorized");
 
 const auth = (req, res, next) => {
   let token;
-  let payload;
 
   try {
     token = req.cookies.jwt;
   } catch (err) {
     throw new ErrorUnauthorized("Необходимо авторизоваться!");
   }
+
+  let payload;
 
   try {
     payload = jwt.verify(token, "SECRET");
