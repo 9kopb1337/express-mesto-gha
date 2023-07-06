@@ -1,22 +1,16 @@
 const Card = require("../models/card");
-const {
-  ERROR_BAD_REQUEST,
-  ERROR_NOT_FOUND,
-  SERVER_ERROR,
-} = require("../errors/error");
 
-const getCards = (req, res) => {
+const ErrorBadRequest = require("../errors/errorBadRequest");
+const ErrorForbidden = require("../errors/errorForbidden");
+const ErrorNotFound = require("../errors/errorNotFound");
+
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => {
-      res.status(SERVER_ERROR).send({
-        message: "Сервер столкнулся с неожиданной ошибкой.",
-        err: err.message,
-      });
-    });
+    .catch(next);
 };
 
-const postCard = (req, res) => {
+const postCard = (req, res, next) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
@@ -24,89 +18,74 @@ const postCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные карточки." });
+        next(
+          new ErrorBadRequest(
+            `Переданные данные карточки при создании некорректны: ${err}`
+          )
+        );
       } else {
-        res.status(SERVER_ERROR).send({
-          message: "Сервер столкнулся с неожиданной ошибкой.",
-          err: err.message,
-        });
+        next(err);
       }
     });
 };
 
-const deleteCard = (req, res) => {
-  const { cardId } = req.params;
-
-  Card.findByIdAndDelete(cardId)
-    .orFail(new Error('DocumentNotFoundError'))
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.message === "DocumentNotFoundError") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-      } else if (err.name === "CastError") {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные карточки." });
+const deleteCard = (req, res, next) => {
+  Card.findByIdAndDelete(req.params.cardId)
+    .orFail(() => new ErrorNotFound(`Карточка не найдена`))
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        card
+          .deleteOne(card)
+          .then((cards) => res.send(cards))
+          .catch(next);
       } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+        throw new ErrorForbidden(`Нельзя удалить чужую карточку`);
       }
+    })
+    .catch(next);
+};
+
+const likeCard = (req, res, next) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((card) => {
+      if (!card) {
+        throw new ErrorNotFound(`Карточка не найдена!`);
+      }
+      next(res.rend(card));
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        next(
+          new ErrorBadRequest(`Переданы некорректные данные карточки: ${err}`)
+        );
+      }
+      next(err);
     });
 };
 
-const likeCard = (req, res) => {
-  const { _id } = req.user;
-  const { cardId } = req.params;
-
-  Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .orFail(new Error('DocumentNotFoundError'))
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.message === "DocumentNotFoundError") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-      } else if (err.name === "CastError") {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные карточки." });
-      } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+const deleteLike = (req, res, next) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((card) => {
+      if (!card) {
+        throw new ErrorNotFound(`Карточка не найдена!`);
       }
-    });
-};
-
-const deleteLike = (req, res) => {
-  const { _id } = req.user;
-  const { cardId } = req.params;
-
-  Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .orFail(new Error('DocumentNotFoundError'))
-    .then((card) => res.send(card))
+      next(res.rend(card));
+    })
     .catch((err) => {
-      if (err.message === "DocumentNotFoundError") {
-        res.status(ERROR_NOT_FOUND).send({ message: "Карта не была найдена!" });
-      } else if (err.name === "CastError") {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные карточки." });
-      } else {
-        res
-          .status(SERVER_ERROR)
-          .send({
-            message: "Сервер столкнулся с неожиданной ошибкой.",
-            err: err.message,
-          });
+      if (err.name === "CastError") {
+        next(
+          new ErrorBadRequest(`Переданы некорректные данные карточки: ${err}`)
+        );
       }
+      next(err);
     });
 };
 
