@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const jsonWebToken = require("jsonwebtoken");
+const JsonWebToken = require("jsonwebtoken");
 const User = require("../models/user");
 
 const ErrorBadRequest = require("../errors/errorBadRequest");
@@ -18,7 +18,7 @@ const loginUser = (req, res, next) => {
         .compare(password, user.password)
         .then((isValidaUser) => {
           if (isValidaUser) {
-            const jwt = jsonWebToken.sign({ _id: user._id }, "SECRET");
+            const jwt = JsonWebToken.sign({ _id: user._id }, "SECRET");
             res.cookie("jwt", jwt, {
               maxage: 360000,
               httpOnly: true,
