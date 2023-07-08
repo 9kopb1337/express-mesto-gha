@@ -15,7 +15,7 @@ const loginUser = (req, res, next) => {
     .select("+password")
     .then((user) => {
       bcrypt
-        .compare(password, user.password)
+        .compare(password, user.password).orFail(() => new ErrorUnauthorized('Авторизация не прошла.'))
         .then((isValidaUser) => {
           if (isValidaUser) {
             const jwt = JsonWebToken.sign({ _id: user._id }, "SECRET");
@@ -39,12 +39,12 @@ const createUser = (req, res, next) => {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
-    .then((user) => res.send(user.toJSON()))
+    .then((user) => res.status(201).send(user.toJSON()))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        throw new ErrorBadRequest(`Переданы некорректные данные.`);
+        next(new ErrorBadRequest(`Переданы некорректные данные.`));
       } else if (err.code === 11000) {
-        throw new ErrorConflict(`Такой e-mail уже занят.`);
+        next(new ErrorConflict(`Такой e-mail уже занят.`));
       }
       next(err);
     });
@@ -63,7 +63,7 @@ const getCurrentUserInfo = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-const updateUserInfo = (req, res) => {
+const updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -74,14 +74,14 @@ const updateUserInfo = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        throw new ErrorBadRequest(`Переданы некорректные данные.`);
+        next(new ErrorBadRequest(`Переданы некорректные данные.`));
       } else {
-        throw new ErrorServer(`Произошла ошибка сервера.`);
+        next(new ErrorServer(`Произошла ошибка сервера.`));
       }
     });
 };
 
-const updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(
@@ -92,9 +92,9 @@ const updateUserAvatar = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        throw new ErrorBadRequest(`Переданы некорректные данные.`);
+        next(new ErrorBadRequest(`Переданы некорректные данные.`));
       } else {
-        throw new ErrorServer(`Произошла ошибка сервера.`);
+        next(new ErrorServer(`Произошла ошибка сервера.`));
       }
     });
 };
@@ -109,7 +109,7 @@ const getUserId = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        throw new ErrorBadRequest(`Некорректные данные.`);
+        next(new ErrorBadRequest(`Некорректные данные.`));
       }
       next(err);
     })

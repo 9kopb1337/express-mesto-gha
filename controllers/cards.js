@@ -15,7 +15,7 @@ const postCard = (req, res, next) => {
   const { _id } = req.user;
 
   Card.create({ name, link, owner: _id })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(
@@ -30,7 +30,7 @@ const postCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(() => new ErrorNotFound(`Карточка не найдена`))
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
