@@ -44,8 +44,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new ErrorBadRequest(`Переданы некорректные данные.`));
+        return;
       } else if (err.code === 11000) {
         next(new ErrorConflict(`Такой e-mail уже занят.`));
+        return;
       }
       next(err);
     });
@@ -76,8 +78,10 @@ const updateUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new ErrorBadRequest(`Переданы некорректные данные.`));
+        return;
       } else {
         next(new ErrorServer(`Произошла ошибка сервера.`));
+        return;
       }
     });
 };
@@ -94,8 +98,10 @@ const updateUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new ErrorBadRequest(`Переданы некорректные данные.`));
+        return;
       } else {
         next(new ErrorServer(`Произошла ошибка сервера.`));
+        return;
       }
     });
 };
@@ -111,6 +117,7 @@ const getUserId = (req, res, next) => {
     .catch((err) => {
       if (err.name === "CastError") {
         next(new ErrorBadRequest(`Некорректные данные.`));
+        return;
       }
       next(err);
     })
