@@ -9,13 +9,13 @@ const { validateUserSingUp, validateUserSignIn } = require('../middlewares/valid
 router.use('/users', userRoutes);
 router.use('/cards', cardsRoutes);
 
+router.use(auth);
+
 router.post('/signup', validateUserSingUp, createUser);
 router.post('/signin', validateUserSignIn, loginUser);
 
-router.use(auth);
-
 router.use('*', (req, res, next) => {
   throw new ErrorNotFound('Маршрут не найден!');
-})
+});
 
 module.exports = router;
