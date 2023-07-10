@@ -6,13 +6,13 @@ const auth = require('../middlewares/auth');
 const ErrorNotFound = require('../errors/errorNotFound');
 const { validateUserSingUp, validateUserSignIn } = require('../middlewares/validate');
 
-router.use('/users', userRoutes);
-router.use('/cards', cardsRoutes);
+router.post('/signup', validateUserSingUp, createUser);
+router.post('/signin', validateUserSignIn, loginUser);
 
 router.use(auth);
 
-router.post('/signup', validateUserSingUp, createUser);
-router.post('/signin', validateUserSignIn, loginUser);
+router.use('/users', userRoutes);
+router.use('/cards', cardsRoutes);
 
 router.use('*', (req, res, next) => {
   throw new ErrorNotFound('Маршрут не найден!');
