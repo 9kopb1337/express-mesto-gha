@@ -54,8 +54,9 @@ const likeCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new ErrorNotFound(`Карточка не найдена!`);
+      } else {
+        next(res.status(200).rend(card));
       }
-      res.rend(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -76,8 +77,9 @@ const deleteLike = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new ErrorNotFound(`Карточка не найдена!`);
+      } else {
+        next(res.status(200).rend(card));
       }
-      res.rend(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
