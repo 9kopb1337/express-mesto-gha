@@ -22,8 +22,8 @@ const postCard = (req, res, next) => {
           new ErrorBadRequest(
             `Переданные данные карточки при создании некорректны: ${err}`
           )
-          return;
         );
+        return;
       } else {
         next(err);
       }
