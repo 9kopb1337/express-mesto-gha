@@ -66,7 +66,7 @@ const likeCard = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    }).catch(next);
 };
 
 const deleteLike = (req, res, next) => {
@@ -90,7 +90,7 @@ const deleteLike = (req, res, next) => {
       } else {
         next(err);
       }
-    });
+    }).catch(next);
 };
 
 module.exports = { getCards, postCard, deleteCard, likeCard, deleteLike };
