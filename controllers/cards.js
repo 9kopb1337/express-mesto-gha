@@ -23,7 +23,6 @@ const postCard = (req, res, next) => {
             `Переданные данные карточки при создании некорректны: ${err}`
           )
         );
-        return;
       } else {
         next(err);
       }
@@ -63,7 +62,6 @@ const likeCard = (req, res, next) => {
         next(
           new ErrorBadRequest(`Переданы некорректные данные карточки: ${err}`)
         );
-        return;
       }
       next(err);
     });
@@ -86,7 +84,6 @@ const deleteLike = (req, res, next) => {
         next(
           new ErrorBadRequest(`Переданы некорректные данные карточки: ${err}`)
         );
-        return;
       }
       next(err);
     });
