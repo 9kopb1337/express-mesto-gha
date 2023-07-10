@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       if (card.owner.toString() === req.user._id) {
         card
           .deleteOne(card)
-          .then((cards) => res.status(201).send(cards))
+          .then((cards) => res.send(cards))
           .catch(next);
       } else {
         throw new ErrorForbidden(`Нельзя удалить чужую карточку`);
@@ -55,7 +55,7 @@ const likeCard = (req, res, next) => {
       if (!card) {
         throw new ErrorNotFound(`Карточка не найдена!`);
       }
-      res.status(201).rend(card);
+      res.rend(card);
     })
     .catch((err) => {
       if (err.name === "CastError") {
