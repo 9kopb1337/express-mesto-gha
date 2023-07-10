@@ -55,7 +55,7 @@ const likeCard = (req, res, next) => {
       if (!card) {
         throw new ErrorNotFound(`Карточка не найдена!`);
       } else {
-        next(res.status(200).rend(card));
+        next(res.status(200).send(card));
       }
     })
     .catch((err) => {
@@ -79,7 +79,7 @@ const deleteLike = (req, res, next) => {
       if (!card) {
         throw new ErrorNotFound(`Карточка не найдена!`);
       } else {
-        next(res.status(200).rend(card));
+        next(res.status(200).send(card));
       }
     })
     .catch((err) => {
