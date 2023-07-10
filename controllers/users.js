@@ -13,10 +13,10 @@ const loginUser = (req, res, next) => {
 
   User.findOne({ email })
     .select("+password")
+    .orFail(() => new ErrorUnauthorized("Авторизация не прошла."))
     .then((user) => {
       bcrypt
         .compare(password, user.password)
-        .orFail(() => new ErrorUnauthorized("Авторизация не прошла."))
         .then((isValidaUser) => {
           if (isValidaUser) {
             const jwt = JsonWebToken.sign({ _id: user._id }, "SECRET");
