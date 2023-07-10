@@ -15,7 +15,7 @@ router.use('/users', userRoutes);
 router.use('/cards', cardsRoutes);
 
 router.use('*', (req, res, next) => {
-  throw new ErrorNotFound('Маршрут не найден!');
+  next(new ErrorNotFound('Маршрут не найден!'));
 });
 
 module.exports = router;
