@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       if (card.owner.toString() === req.user._id) {
         card
           .deleteOne(card)
-          .then((cards) => res.send(cards))
+          .then((cards) => res.status(201).send(cards))
           .catch(next);
       } else {
         throw new ErrorForbidden(`Нельзя удалить чужую карточку`);
